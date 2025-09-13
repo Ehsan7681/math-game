@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>بازی ریاضی کلاس اول</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="description" content="بازی آموزشی ریاضی برای کلاس اول ابتدایی">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="بازی ریاضی">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f8ff;
+            --primary-color: #4a90e2;
+            --secondary-color: #50e3c2;
+            --correct-color: #7ed321;
+            --wrong-color: #d0021b;
+            --text-color: #333;
+            --white-color: #ffffff;
+            --font-family: 'Vazirmatn', sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10+ */
+            user-select: none;
+            min-height: 100vh;
+            min-height: 100dvh;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 800px;
+            background-color: var(--white-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            height: 90%;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        /* Start Screen Styles */
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        
+        #start-screen .menu-button {
+            display: block;
+            width: 80%;
+            margin: 15px auto;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            color: var(--white-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #start-screen .menu-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .credits {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Game Container Styles */
+        #game-container {
+            position: static;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #back-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 2rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 100;
+        }
+        #back-button:hover {
+            transform: scale(1.2);
+        }
+
+        .game-screen {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* --- Pattern Game Styles --- */
+        #pattern-display {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            font-size: 4rem;
+            align-items: center;
+            direction: ltr;
+        }
+        #pattern-display .placeholder {
+            width: 70px;
+            height: 70px;
+            border: 3px dashed var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        #pattern-options {
+            display: flex;
+            gap: 20px;
+        }
+        .pattern-option {
+            font-size: 3.5rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .pattern-option:hover {
+            transform: scale(1.1);
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+
+        /* --- Sorting Game Styles --- */
+        #sorting-game {
+            justify-content: flex-start;
+        }
+        #sorting-area {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            height: 100%;
+            gap: 20px;
+            flex-grow: 1;
+        }
+        #items-to-sort {
+            border: 2px dashed var(--secondary-color);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: 15px;
+            width: 48%;
+            min-height: 300px;
+            padding: 10px;
+            border-radius: 15px;
+        }
+        #drop-zones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 48%;
+        }
+        .drop-zone {
+            border: 2px solid var(--primary-color);
+            background-color: #eef5ff;
+            width: 100%;
+            min-height: 90px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            border-radius: 15px;
+            flex-grow: 1;
+        }
+        .drop-zone.over {
+            background-color: #d4e7ff;
+            border-style: solid;
+            transform: scale(1.03);
+        }
+        .sortable-item {
+            font-size: 3rem;
+            cursor: grab;
+            transition: transform 0.2s;
+            touch-action: none; /* Important for touch drag */
+        }
+        .sortable-item:active {
+            cursor: grabbing;
+        }
+        
+        #check-sorting-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            color: var(--white-color);
+            background: linear-gradient(45deg, #28a745, #218838);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        /* --- Counting Game Styles --- */
+        #fruit-display {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: center;
+            gap: 10px;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            min-height: 150px;
+            max-width: 90%;
+            flex-grow: 1;
+        }
+        #number-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            max-width: 325px; /* Fits 5 items perfectly */
+            margin: 0 auto;
+        }
+        .number-option {
+            width: 55px;
+            height: 55px;
+            font-size: 2.2rem;
+            font-weight: bold;
+            border: 3px solid var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .number-option:hover {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            transform: translateY(-5px);
+        }
+
+        /* Feedback Styles */
+        .correct {
+            animation: tada 0.8s;
+            background-color: var(--correct-color) !important;
+            color: var(--white-color) !important;
+            border-color: var(--correct-color) !important;
+        }
+        .incorrect {
+            animation: shake 0.5s;
+            background-color: var(--wrong-color) !important;
+            color: var(--white-color) !important;
+            border-color: var(--wrong-color) !important;
+        }
+        
+        #feedback-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        #feedback-modal-content {
+            background-color: white;
+            padding: 40px 60px;
+            border-radius: 20px;
+            text-align: center;
+            animation: zoomIn 0.5s;
+        }
+        #feedback-modal-content h2 {
+            font-size: 3rem;
+            color: var(--correct-color);
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        @keyframes tada {
+            from { transform: scale3d(1, 1, 1); }
+            10%, 20% { transform: scale3d(.9, .9, .9) rotate3d(0, 0, 1, -3deg); }
+            30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+            40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+            to { transform: scale3d(1, 1, 1); }
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .container {
+                width: 100vw;
+                height: 100%;
+                max-height: 100dvh;
+                border-radius: 0;
+                padding: 10px;
+                box-sizing: border-box;
+                justify-content: flex-start;
+                overflow-y: hidden;
+            }
+            
+            #start-screen {
+                justify-content: center;
+            }
+
+            h1 { font-size: clamp(1.8rem, 7vw, 2.2rem); }
+            h2 { font-size: clamp(1.3rem, 5vw, 1.6rem); margin-top: 30px; margin-bottom: 15px; }
+
+            #start-screen .menu-button {
+                padding: 15px;
+                font-size: clamp(1rem, 4.5vw, 1.2rem);
+            }
+            
+            #back-button {
+                top: 5px;
+                right: 5px;
+            }
+            
+            .game-screen {
+                min-height: 0;
+                padding-top: 40px;
+                box-sizing: border-box;
+                justify-content: space-between;
+            }
+
+            /* Pattern Game Mobile */
+            #pattern-display {
+                font-size: clamp(2rem, 8vw, 2.5rem);
+                gap: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+            #pattern-display .placeholder {
+                width: clamp(45px, 12vw, 55px);
+                height: clamp(45px, 12vw, 55px);
+            }
+            #pattern-options {
+                gap: 15px;
+            }
+            .pattern-option {
+                font-size: clamp(2.2rem, 9vw, 2.8rem);
+            }
+            
+            /* Sorting Game Mobile */
+            #sorting-area {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #items-to-sort {
+                width: 100%;
+                box-sizing: border-box;
+                min-height: 100px;
+                height: 35%;
+                align-content: center;
+            }
+            #drop-zones {
+                width: 100%;
+                box-sizing: border-box;
+                flex-grow: 1;
+                justify-content: space-around;
+            }
+            .drop-zone {
+                font-size: clamp(1.5rem, 6vw, 2rem);
+                min-height: 50px;
+            }
+            .sortable-item {
+                font-size: clamp(2rem, 8vw, 2.5rem);
+            }
+            #check-sorting-button {
+                width: 80%;
+                margin: 10px auto 0 auto;
+            }
+
+            /* Counting Game Mobile */
+             #counting-game {
+                 justify-content: space-evenly; /* Moves items away from edges */
+             }
+            #fruit-display {
+                font-size: clamp(1.8rem, 7vw, 2.2rem);
+                gap: 5px;
+                min-height: 120px;
+                align-items: center;
+            }
+            #number-options {
+                gap: 5px;
+            }
+            .number-option {
+                width: clamp(40px, 11vw, 50px);
+                height: clamp(40px, 11vw, 50px);
+                font-size: clamp(1.5rem, 5vw, 1.8rem);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- صفحه شروع -->
+        <div id="start-screen">
+            <h1>بازی ریاضی کلاس اول</h1>
+            <button class="menu-button" data-game="pattern">بازی الگوها 🧩</button>
+            <button class="menu-button" data-game="sorting">بازی دسته‌بندی 🎨</button>
+            <button class="menu-button" data-game="counting">بازی شمارش 🍎</button>
+            <p class="credits">ایده و تولید توسط احسان شamsی</p>
+        </div>
+
+        <!-- محفظه اصلی بازی -->
+        <div id="game-container" class="hidden">
+            <button id="back-button">🏠</button>
+
+            <!-- بازی الگوها -->
+            <div id="pattern-game" class="game-screen hidden">
+                <h2>الگو را کامل کن</h2>
+                <div id="pattern-display"></div>
+                <div id="pattern-options"></div>
+            </div>
+
+            <!-- بازی دسته‌بندی -->
+            <div id="sorting-game" class="game-screen hidden">
+                 <h2 id="sorting-title"></h2>
+                 <div id="sorting-area">
+                     <div id="items-to-sort"></div>
+                     <div id="drop-zones"></div>
+                 </div>
+                 <button id="check-sorting-button" class="hidden">بررسی پاسخ</button>
+            </div>
+
+            <!-- بازی شمارش -->
+            <div id="counting-game" class="game-screen hidden">
+                <h2>میوه‌ها را بشمار</h2>
+                <div id="fruit-display"></div>
+                <div id="number-options"></div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div id="feedback-modal" class="hidden">
+        <div id="feedback-modal-content">
+            <h2>🎉 آفرین! 🎉</h2>
+        </div>
+    </div>
+
+    <script>
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // --- ابزارهای کلی ---
+        const startScreen = document.getElementById('start-screen');
+        const gameContainer = document.getElementById('game-container');
+        const backButton = document.getElementById('back-button');
+        const feedbackModal = document.getElementById('feedback-modal');
+        
+        const patternGameScreen = document.getElementById('pattern-game');
+        const sortingGameScreen = document.getElementById('sorting-game');
+        const countingGameScreen = document.getElementById('counting-game');
+        const gameScreens = [patternGameScreen, sortingGameScreen, countingGameScreen];
+
+        const toPersianNum = num => String(num).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+        let audioCtx;
+        function playSound(type) {
+            if (!audioCtx) {
+                try {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) {
+                    console.error("Web Audio API is not supported in this browser");
+                }
+            }
+            if (!audioCtx) return;
+
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            if (type === 'correct') {
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+            } else if (type === 'wrong') {
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
+            }
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function showScreen(screen) {
+            startScreen.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+            gameScreens.forEach(s => s.classList.add('hidden'));
+            screen.classList.remove('hidden');
+        }
+
+        function showStartScreen() {
+            gameContainer.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+
+        document.querySelectorAll('.menu-button').forEach(button => {
+            button.addEventListener('click', () => {
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const game = button.getAttribute('data-game');
+                startGame(game);
+            });
+        });
+
+        backButton.addEventListener('click', showStartScreen);
+
+        function startGame(gameType) {
+            if (gameType === 'pattern') {
+                showScreen(patternGameScreen);
+                startPatternGame();
+            } else if (gameType === 'sorting') {
+                showScreen(sortingGameScreen);
+                startSortingGame();
+            } else if (gameType === 'counting') {
+                showScreen(countingGameScreen);
+                startCountingGame();
+            }
+        }
+        
+        function showFeedbackModal() {
+            feedbackModal.classList.remove('hidden');
+            setTimeout(() => {
+                feedbackModal.classList.add('hidden');
+            }, 1500);
+        }
+
+        // --- منطق بازی الگوها (Pattern Game) ---
+        const patternDisplay = document.getElementById('pattern-display');
+        const patternOptions = document.getElementById('pattern-options');
+        const patterns = [
+            { sequence: ['🍎', '🍌', '🍎'], answer: '🍌', options: ['🍌', '🍓', '🍊'] },
+            { sequence: ['🔵', '🟢', '🔵'], answer: '🟢', options: ['🟢', '🔴', '🟡'] },
+            { sequence: ['⭐', '❤️', '⭐'], answer: '❤️', options: ['❤️', '🌙', '⭐'] },
+            { sequence: ['🚗', '🚗', '🚲'], answer: '🚲', options: ['🚲', '✈️', '🚗'] },
+            { sequence: ['☀️', '🌙', '☀️'], answer: '🌙', options: ['🌙', '⭐', '☁️'] },
+            { sequence: ['۱', '۲', '۱'], answer: '۲', options: ['۲', '۳', '۱'] },
+            { sequence: ['🐶', '🐱', '🐶'], answer: '🐱', options: ['🐱', '🐭', '🐰'] },
+            { sequence: ['🔺', '🔻', '🔺'], answer: '🔻', options: ['🔻', '🟥', '🔵'] },
+            { sequence: ['🟥', '🟥', '🟩'], answer: '🟩', options: ['🟩', '🟥', '🟦'] },
+            { sequence: ['🍋', '🍓', '🍋'], answer: '🍓', options: ['🍓', '🍌', '🍇'] },
+            { sequence: ['🌎', '🚀', '🌎'], answer: '🚀', options: ['🚀', '⭐', '✈️'] },
+            { sequence: ['⚫️', '⚪️', '⚫️'], answer: '⚪️', options: ['⚪️', '⚫️', '🔘'] },
+            { sequence: ['➡️', '⬆️', '➡️'], answer: '⬆️', options: ['⬆️', '⬅️', '⬇️'] },
+            { sequence: ['🐰', '🥕', '🐰'], answer: '🥕', options: ['🥕', '🥬', '🐰'] },
+            { sequence: ['⏰', '🔔', '⏰'], answer: '🔔', options: ['🔔', '📞', '⏳'] },
+            { sequence: ['⚽️', '🏀', '⚽️'], answer: '🏀', options: ['🏀', '🏐', '🏈'] },
+            { sequence: ['💧', '🔥', '💧'], answer: '🔥', options: ['🔥', '🌊', '💨'] },
+            { sequence: ['🔑', '🔒', '🔑'], answer: '🔒', options: ['🔒', '🔓', '🗝️'] },
+            { sequence: ['🙂', '😢', '🙂'], answer: '😢', options: ['😢', '😄', '😠'] },
+            { sequence: ['🌳', '🌳', '🌸'], answer: '🌸', options: ['🌸', '🌲', '🍁'] },
+            { sequence: ['⛵️', '🚗', '⛵️'], answer: '🚗', options: ['🚗', '🚲', '✈️'] }
+        ];
+        let currentPattern;
+
+        function startPatternGame() {
+            currentPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            patternDisplay.innerHTML = '';
+            currentPattern.sequence.forEach(item => {
+                patternDisplay.innerHTML += `<span>${item}</span>`;
+            });
+            patternDisplay.innerHTML += '<span class="placeholder">؟</span>';
+            patternOptions.innerHTML = '';
+            const shuffledOptions = [...currentPattern.options].sort(() => Math.random() - 0.5);
+            shuffledOptions.forEach(option => {
+                const optionEl = document.createElement('div');
+                optionEl.className = 'pattern-option';
+                optionEl.textContent = option;
+                optionEl.addEventListener('click', checkPatternAnswer);
+                patternOptions.appendChild(optionEl);
+            });
+        }
+        
+        function checkPatternAnswer(e) {
+            if (e.target.classList.contains('correct') || e.target.classList.contains('incorrect')) return;
+            const selectedOption = e.target.textContent;
+            if (selectedOption === currentPattern.answer) {
+                playSound('correct');
+                e.target.classList.add('correct');
+                setTimeout(startPatternGame, 1000);
+            } else {
+                playSound('wrong');
+                e.target.classList.add('incorrect');
+                setTimeout(() => e.target.classList.remove('incorrect'), 800);
+            }
+        }
+
+        // --- منطق بازی دسته‌بندی (Sorting Game) ---
+        const itemsToSortContainer = document.getElementById('items-to-sort');
+        const dropZonesContainer = document.getElementById('drop-zones');
+        const sortingTitle = document.getElementById('sorting-title');
+        const checkSortingBtn = document.getElementById('check-sorting-button');
+        const sortingScenarios = [
+            {
+                title: "رنگ‌ها را جدا کن",
+                itemTypes: [ { emoji: '🔴', type: 'red' }, { emoji: '🔵', type: 'blue' }, { emoji: '🟢', type: 'green' } ],
+                zones: [ { id: 'red', text: '🔴' }, { id: 'blue', text: '🔵' }, { id: 'green', text: '🟢' } ]
+            },
+            {
+                title: "شکل‌ها را جدا کن",
+                itemTypes: [ { emoji: '❤️', type: 'heart' }, { emoji: '⭐', type: 'star' }, { emoji: '🌙', type: 'moon' } ],
+                zones: [ { id: 'heart', text: '❤️' }, { id: 'star', text: '⭐' }, { id: 'moon', text: '🌙' } ]
+            },
+            {
+                title: "حیوانات و میوه‌ها",
+                itemTypes: [ { emoji: '🍎', type: 'fruit' }, { emoji: '🐶', type: 'animal' } ],
+                zones: [ { id: 'fruit', text: '🍎' }, { id: 'animal', text: '🐾' } ]
+            },
+            {
+                title: "وسایل نقلیه",
+                itemTypes: [ { emoji: '🚗', type: 'land' }, { emoji: '✈️', type: 'air' }, { emoji: '🚢', type: 'sea' } ],
+                zones: [ { id: 'land', text: '🚗' }, { id: 'air', text: '✈️' }, { id: 'sea', text: '🚢' } ]
+            },
+            {
+                title: "میوه و سبزیجات",
+                itemTypes: [ { emoji: '🍓', type: 'fruit' }, { emoji: '🥕', type: 'veg' }, { emoji: '🥦', type: 'veg' } ],
+                zones: [ { id: 'fruit', text: '🍓' }, { id: 'veg', text: '🥕' } ]
+            },
+            {
+                title: "هوا چطوره؟",
+                itemTypes: [ { emoji: '☀️', type: 'sun' }, { emoji: '🌧️', type: 'rain' }, { emoji: '❄️', type: 'snow' } ],
+                zones: [ { id: 'sun', text: '☀️' }, { id: 'rain', text: '🌧️' }, { id: 'snow', text: '❄️' } ]
+            },
+            {
+                title: "اسباب‌بازی‌ها",
+                itemTypes: [ { emoji: '⚽️', type: 'ball' }, { emoji: '🚗', type: 'car' }, { emoji: '🧸', type: 'teddy' } ],
+                zones: [ { id: 'ball', text: '⚽️' }, { id: 'car', text: '🚗' }, { id: 'teddy', text: '🧸' } ]
+            },
+            {
+                title: "لباس‌ها",
+                itemTypes: [ { emoji: '👕', type: 'shirt' }, { emoji: '👖', type: 'pants' }, { emoji: '👟', type: 'shoe' } ],
+                zones: [ { id: 'shirt', text: '👕' }, { id: 'pants', text: '👖' }, { id: 'shoe', text: '👟' } ]
+            },
+            {
+                title: "گرم و سرد",
+                itemTypes: [ { emoji: '🔥', type: 'hot' }, { emoji: '🧊', type: 'cold' } ],
+                zones: [ { id: 'hot', text: '🔥' }, { id: 'cold', text: '🧊' } ]
+            },
+            {
+                title: "لوازم مدرسه",
+                itemTypes: [ { emoji: '✏️', type: 'pencil' }, { emoji: '📖', type: 'book' }, { emoji: '✂️', type: 'scissors' } ],
+                zones: [ { id: 'pencil', text: '✏️' }, { id: 'book', text: '📖' }, { id: 'scissors', text: '✂️' } ]
+            },
+            {
+                title: "خوراکی‌ها",
+                itemTypes: [ { emoji: '🍩', type: 'sweet' }, { emoji: '🍕', type: 'food' } ],
+                zones: [ { id: 'sweet', text: '🍩' }, { id: 'food', text: '🍕' } ]
+            },
+            {
+                title: "رنگ‌های زرد و بنفش",
+                itemTypes: [ { emoji: '🟡', type: 'yellow' }, { emoji: '🟪', type: 'purple' } ],
+                zones: [ { id: 'yellow', text: '🟡' }, { id: 'purple', text: '🟪' } ]
+            },
+            {
+                title: "چیزهای گرد و تیز",
+                itemTypes: [ { emoji: '🏀', type: 'round' }, { emoji: '🔺', type: 'sharp' } ],
+                zones: [ { id: 'round', text: '🏀' }, { id: 'sharp', text: '🔺' } ]
+            }
+        ];
+        let draggedItem = null;
+
+        function generateSortingItems(itemTypes) {
+            const items = [];
+            const useSameCount = Math.random() < 0.25;
+            let sameCount = 0;
+            if (useSameCount) {
+                sameCount = Math.floor(Math.random() * 3) + 2;
+            }
+
+            itemTypes.forEach(itemType => {
+                const count = useSameCount ? sameCount : Math.floor(Math.random() * 3) + 2;
+                for (let i = 0; i < count; i++) {
+                    items.push({ ...itemType });
+                }
+            });
+            return items;
+        }
+
+        function startSortingGame() {
+            const scenario = sortingScenarios[Math.floor(Math.random() * sortingScenarios.length)];
+            sortingTitle.textContent = scenario.title;
+            itemsToSortContainer.innerHTML = '';
+            dropZonesContainer.innerHTML = '';
+            checkSortingBtn.classList.add('hidden');
+
+            scenario.zones.forEach(zoneData => {
+                const zoneEl = document.createElement('div');
+                zoneEl.className = 'drop-zone';
+                zoneEl.dataset.accepts = zoneData.id;
+                zoneEl.innerHTML = `<span>${zoneData.text}</span>`;
+                dropZonesContainer.appendChild(zoneEl);
+            });
+
+            const itemsToDisplay = generateSortingItems(scenario.itemTypes);
+            const shuffledItems = itemsToDisplay.sort(() => Math.random() - 0.5);
+
+            shuffledItems.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'sortable-item';
+                itemEl.textContent = item.emoji;
+                itemEl.setAttribute('draggable', true);
+                itemEl.dataset.type = item.type;
+                itemsToSortContainer.appendChild(itemEl);
+            });
+            addDragAndDropListeners();
+        }
+
+        function addDragAndDropListeners() {
+            const items = document.querySelectorAll('.sortable-item');
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            items.forEach(item => {
+                // Mouse events
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+
+                // Touch events
+                item.addEventListener('touchstart', handleTouchStart, { passive: false });
+                item.addEventListener('touchmove', handleTouchMove, { passive: false });
+                item.addEventListener('touchend', handleTouchEnd);
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('drop', handleDrop);
+            });
+        }
+
+        function handleDragStart(e) {
+            draggedItem = this;
+            setTimeout(() => { this.style.opacity = '0.5'; }, 0);
+        }
+
+        function handleDragEnd() {
+            this.style.opacity = '1';
+            draggedItem = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            this.classList.add('over');
+        }
+
+        function handleDragLeave() {
+            this.classList.remove('over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('over');
+            if (draggedItem) {
+                this.appendChild(draggedItem);
+                if (itemsToSortContainer.children.length === 0) {
+                    checkSortingBtn.classList.remove('hidden');
+                }
+            }
+        }
+
+        let touchStartX, touchStartY;
+
+        function handleTouchStart(e) {
+            draggedItem = this;
+            const touch = e.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            
+            draggedItem.style.transition = 'none'; // Disable transition for smooth dragging
+        }
+
+        function handleTouchMove(e) {
+            if (!draggedItem) return;
+            e.preventDefault(); // Prevent scrolling
+            
+            const touch = e.touches[0];
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            // This part is for visual feedback, but the elementFromPoint is more crucial.
+            // For simplicity, we can rely on elementFromPoint without visual clone.
+            
+            draggedItem.style.visibility = 'hidden'; // Hide original to find what's underneath
+            const elementUnder = document.elementFromPoint(x, y);
+            draggedItem.style.visibility = 'visible'; // Show it back
+
+            document.querySelectorAll('.drop-zone').forEach(dz => dz.classList.remove('over'));
+            
+            if (elementUnder) {
+                const dropZone = elementUnder.closest('.drop-zone');
+                if (dropZone) {
+                    dropZone.classList.add('over');
+                }
+            }
+        }
+
+        function handleTouchEnd(e) {
+            if (!draggedItem) return;
+            
+            draggedItem.style.transition = 'transform 0.2s';
+
+            const touch = e.changedTouches[0];
+            const x = touch.clientX;
+            const y = touch.clientY;
+
+            draggedItem.style.visibility = 'hidden';
+            const elementUnder = document.elementFromPoint(x, y);
+            draggedItem.style.visibility = 'visible';
+            
+            document.querySelectorAll('.drop-zone').forEach(dz => dz.classList.remove('over'));
+            
+            if (elementUnder) {
+                const dropZone = elementUnder.closest('.drop-zone');
+                if (dropZone) {
+                    dropZone.appendChild(draggedItem);
+                }
+            }
+
+            if (itemsToSortContainer.children.length === 0) {
+                checkSortingBtn.classList.remove('hidden');
+            }
+            draggedItem = null;
+        }
+        
+        function checkSortingAnswers() {
+            let allCorrect = true;
+            const dropZones = document.querySelectorAll('.drop-zone');
+            dropZones.forEach(zone => {
+                const acceptedType = zone.dataset.accepts;
+                for (let i = zone.children.length - 1; i >= 0; i--) {
+                    const child = zone.children[i];
+                    if (child.classList.contains('sortable-item')) {
+                        if (child.dataset.type !== acceptedType) {
+                            allCorrect = false;
+                            itemsToSortContainer.appendChild(child);
+                        }
+                    }
+                }
+            });
+
+            if (allCorrect && itemsToSortContainer.children.length === 0) {
+                playSound('correct');
+                showFeedbackModal();
+                setTimeout(startSortingGame, 1800);
+            } else {
+                playSound('wrong');
+                checkSortingBtn.classList.add('hidden');
+            }
+        }
+        checkSortingBtn.addEventListener('click', checkSortingAnswers);
+
+        // --- منطق بازی شمارش (Counting Game) ---
+        const fruitDisplay = document.getElementById('fruit-display');
+        const numberOptions = document.getElementById('number-options');
+        const fruits = ['🍎', '🍊', '🍓', '🍇', '🥝', '🍉', '🍍', '🍑'];
+        let correctNumber;
+        
+        function startCountingGame() {
+            correctNumber = Math.floor(Math.random() * 10) + 1; // اعداد ۱ تا ۱۰
+            const randomFruit = fruits[Math.floor(Math.random() * fruits.length)];
+            fruitDisplay.innerHTML = '';
+            for (let i = 0; i < correctNumber; i++) {
+                fruitDisplay.innerHTML += `<span>${randomFruit}</span>`;
+            }
+
+            numberOptions.innerHTML = '';
+            for (let i = 1; i <= 10; i++) { // دکمه‌ها تا ۱۰
+                const numberEl = document.createElement('div');
+                numberEl.className = 'number-option';
+                numberEl.textContent = toPersianNum(i);
+                numberEl.dataset.number = i;
+                numberEl.addEventListener('click', checkCountingAnswer);
+                numberOptions.appendChild(numberEl);
+            }
+        }
+
+        function checkCountingAnswer(e) {
+            if (e.target.classList.contains('correct') || e.target.classList.contains('incorrect')) return;
+            const selectedNumber = parseInt(e.target.dataset.number);
+            if (selectedNumber === correctNumber) {
+                playSound('correct');
+                e.target.classList.add('correct');
+                 setTimeout(startCountingGame, 1000);
+            } else {
+                playSound('wrong');
+                e.target.classList.add('incorrect');
+                setTimeout(() => e.target.classList.remove('incorrect'), 800);
+            }
+        }
+
+    </script>
+</body>
+</html>
