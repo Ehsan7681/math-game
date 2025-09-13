@@ -55,6 +55,8 @@
             user-select: none;
             min-height: 100vh;
             min-height: 100dvh;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .container {
@@ -71,6 +73,7 @@
             max-height: 600px;
             display: flex;
             flex-direction: column;
+            margin: 20px auto;
         }
 
         .hidden {
@@ -80,11 +83,13 @@
         h1 {
             color: var(--primary-color);
             font-size: 2.5rem;
+            margin-top: 20px;
         }
         
         h2 {
             font-size: 1.8rem;
             margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         /* Start Screen Styles */
@@ -94,6 +99,8 @@
             justify-content: center;
             align-items: center;
             height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
         }
         
         #start-screen .menu-button {
@@ -121,6 +128,7 @@
             margin-top: 30px;
             font-size: 0.9rem;
             color: #aaa;
+            margin-bottom: 20px;
         }
 
         /* Game Container Styles */
@@ -130,6 +138,8 @@
             width: 100%;
             display: flex;
             flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         #back-button {
@@ -155,6 +165,8 @@
             align-items: center;
             height: 100%;
             width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         /* --- Pattern Game Styles --- */
@@ -165,6 +177,7 @@
             font-size: 4rem;
             align-items: center;
             direction: ltr;
+            justify-content: center;
         }
         #pattern-display .placeholder {
             width: 70px;
@@ -180,6 +193,8 @@
         #pattern-options {
             display: flex;
             gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
         }
         .pattern-option {
             font-size: 3.5rem;
@@ -196,6 +211,7 @@
         /* --- Sorting Game Styles --- */
         #sorting-game {
             justify-content: flex-start;
+            padding: 20px 0;
         }
         #sorting-area {
             display: flex;
@@ -204,6 +220,7 @@
             height: 100%;
             gap: 20px;
             flex-grow: 1;
+            margin: 20px 0;
         }
         #items-to-sort {
             border: 2px dashed var(--secondary-color);
@@ -254,7 +271,7 @@
         }
         
         #check-sorting-button {
-            margin-top: 20px;
+            margin: 20px auto;
             padding: 15px 30px;
             font-size: 1.2rem;
             font-weight: 700;
@@ -275,7 +292,7 @@
             align-content: center;
             gap: 10px;
             font-size: 3rem;
-            margin-bottom: 20px;
+            margin: 20px 0;
             min-height: 150px;
             max-width: 90%;
             flex-grow: 1;
@@ -286,7 +303,7 @@
             justify-content: center;
             gap: 10px;
             max-width: 325px; /* Fits 5 items perfectly */
-            margin: 0 auto;
+            margin: 20px auto;
         }
         .number-option {
             width: 55px;
@@ -369,8 +386,12 @@
         
         /* Mobile Optimization */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
             .container {
-                width: 100vw;
+                width: 100%;
                 height: 100%;
                 max-height: 100dvh;
                 border-radius: 0;
@@ -378,18 +399,21 @@
                 box-sizing: border-box;
                 justify-content: flex-start;
                 overflow-y: hidden;
+                margin: 0;
             }
             
             #start-screen {
                 justify-content: center;
+                padding: 10px;
             }
 
-            h1 { font-size: clamp(1.8rem, 7vw, 2.2rem); }
-            h2 { font-size: clamp(1.3rem, 5vw, 1.6rem); margin-top: 30px; margin-bottom: 15px; }
+            h1 { font-size: clamp(1.8rem, 7vw, 2.2rem); margin-top: 10px; }
+            h2 { font-size: clamp(1.3rem, 5vw, 1.6rem); margin-top: 20px; margin-bottom: 15px; }
 
             #start-screen .menu-button {
                 padding: 15px;
                 font-size: clamp(1rem, 4.5vw, 1.2rem);
+                margin: 10px auto;
             }
             
             #back-button {
@@ -399,7 +423,7 @@
             
             .game-screen {
                 min-height: 0;
-                padding-top: 40px;
+                padding: 30px 10px 10px 10px;
                 box-sizing: border-box;
                 justify-content: space-between;
             }
@@ -418,6 +442,7 @@
             }
             #pattern-options {
                 gap: 15px;
+                margin-bottom: 10px;
             }
             .pattern-option {
                 font-size: clamp(2.2rem, 9vw, 2.8rem);
@@ -427,6 +452,7 @@
             #sorting-area {
                 flex-direction: column;
                 gap: 10px;
+                margin: 10px 0;
             }
             #items-to-sort {
                 width: 100%;
@@ -462,14 +488,21 @@
                 gap: 5px;
                 min-height: 120px;
                 align-items: center;
+                margin: 10px 0;
             }
             #number-options {
                 gap: 5px;
+                margin: 10px auto;
             }
             .number-option {
                 width: clamp(40px, 11vw, 50px);
                 height: clamp(40px, 11vw, 50px);
                 font-size: clamp(1.5rem, 5vw, 1.8rem);
+            }
+            
+            .credits {
+                margin-top: 20px;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -483,7 +516,7 @@
             <button class="menu-button" data-game="pattern">بازی الگوها 🧩</button>
             <button class="menu-button" data-game="sorting">بازی دسته‌بندی 🎨</button>
             <button class="menu-button" data-game="counting">بازی شمارش 🍎</button>
-            <p class="credits">ایده و تولید توسط احسان شamsی</p>
+            <p class="credits">ایده و تولید توسط احسان شمسی</p>
         </div>
 
         <!-- محفظه اصلی بازی -->
